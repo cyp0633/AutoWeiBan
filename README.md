@@ -8,12 +8,23 @@
 
 辅助麦课安全网课学习
 
-![GitHub All Releases](https://img.shields.io/github/downloads/WeiYuanStudio/AutoWeiBan/total.svg?style=flat-square)
-![GitHub](https://img.shields.io/github/license/WeiYuanStudio/AutoWeiBan.svg?style=flat-square)
 ![GitHub release](https://img.shields.io/github/release/WeiYuanStudio/AutoWeiBan.svg?style=flat-square)
 ![GitHub last commit](https://img.shields.io/github/last-commit/WeiYuanStudio/AutoWeiBan.svg?style=flat-square)
 
 </div>
+
+# 官方修改了登录POST请求参数，该脚本已经失效，该脚本已经失效，该脚本已经失效。详见Issues
+# 等开学季再考虑修复了。十分抱歉，欢迎哪位大佬百忙中抽空PR帮忙修复
+
+**当然备选方案也是有的**。
+我的学弟用Java Script开发了一个刷课脚本，如果官方只修改了登录POST请求的话，理论上这个方案是可以的，您可以尝试一下这个方案。
+详情访问：
+
+学弟的WBKiller脚本的git仓库地址
+<https://git.darc.pro/DarcJC/WBKiller>
+
+使用方法链接位于学弟的个人博客
+<https://darc.pro/archives/wbcourse-killer.html>
 
 ## 使用方法
 
