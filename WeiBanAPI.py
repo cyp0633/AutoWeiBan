@@ -2,6 +2,7 @@ from urllib import request, parse
 import http.cookiejar
 import json
 import random
+import time
 
 baseDelayTime = 1  # 基础延时秒数
 
@@ -17,11 +18,15 @@ getProgressURL = 'https://weiban.mycourse.cn/pharos/project/showProgress.do'  # 
 
 getListCourseURL = 'https://weiban.mycourse.cn/pharos/usercourse/listCourse.do'  # 请求课程列表 URL
 
-finishCourseURL = 'https://weiban.mycourse.cn/pharos/usercourse/finish.do'  # 请求完成课程
+finishCourseURL = 'https://weiban.mycourse.cn/pharos/usercourse/finish.do'  # 请求完成课程URL
 
-getRandImageURL = 'https://weiban.mycourse.cn/pharos/login/randImage.do'
+getRandImageURL = 'https://weiban.mycourse.cn/pharos/login/randImage.do'  # 验证码URL
 
-doStudyURL = 'https://weiban.mycourse.cn/pharos/usercourse/study.do'
+doStudyURL = 'https://weiban.mycourse.cn/pharos/usercourse/study.do'  # 学习课程URL
+
+genQRCodeURL = 'https://weiban.mycourse.cn/pharos/login/genBarCodeImageAndCacheUuid.do'  # 获取验证码以及验证码ID URL
+
+loginStatusURL = 'https://weiban.mycourse.cn/pharos/login/barCodeWebAutoLogin.do'  # 用于二维码登录刷新登录状态
 
 
 # 获取一个新Cookie
@@ -32,7 +37,7 @@ def getCookie():
     return cookie
 
 
-# 登录请求
+# 登录请求 已经失效
 def login(keyNumber, password, tenantCode, randomTimeStamp, verifyCode, cookie):
     param = {
         'keyNumber': keyNumber,
@@ -47,11 +52,24 @@ def login(keyNumber, password, tenantCode, randomTimeStamp, verifyCode, cookie):
     responseText = responseStream.read().decode('utf-8')
     responseJSON = json.loads(responseText)
     return responseJSON
-    # return responseJSON['data']['userId']
+
+
+def qrLogin():
+    qrCodeID = getQRCode()
+    print(qrCodeID)
+    while True:
+        responseText = getLoginStatus(qrCodeID)
+        responseJSON = json.loads(responseText)
+        if responseJSON['code'] == '0':
+            return responseJSON
+        else:
+            print('未登录，等待后5s刷新')
+            time.sleep(5)
 
 
 # 获取学生信息
 def getStuInfo(userId, tenantCode, cookie):
+    logger('开始请求用户数据')
     param = {
         'userId': userId,
         'tenantCode': tenantCode
@@ -60,6 +78,7 @@ def getStuInfo(userId, tenantCode, cookie):
     req = request.Request(url=getNameURL, data=data, method='POST')
     responseStream = request.urlopen(req)
     responseText = responseStream.read().decode('utf-8')
+    logger(responseText)
     responseJSON = json.loads(responseText)
     return responseJSON
 
@@ -123,3 +142,32 @@ def doStudy(userProjectId, userCourseId, tenantCode):
     responseText = responseStream.read().decode('utf-8')
     print(responseText)
     return
+
+
+# 获取并返回QRCode 链接以及 QRCode ID
+def getQRCode():
+    req = request.Request(url=genQRCodeURL, method='POST')
+    responseStream = request.urlopen(req)
+    responseText = responseStream.read().decode('utf-8')
+    responseJSON = json.loads(responseText)
+    logger('Response:' + responseText)
+    print('请浏览器打开下面的二维码登录链接，使用二维码登录（若无法登录请检查是否已经在网页端绑定微信登录功能）')
+    print(responseJSON['data']['imagePath'] + '\n')
+    return responseJSON['data']['barCodeCacheUserId']
+
+
+# 用于二维码登录，刷新是否已经成功登录
+def getLoginStatus(qrCodeID):
+    param = {
+        'barCodeCacheUserId': qrCodeID
+    }
+    data = bytes(parse.urlencode(param), encoding='utf-8')
+    req = request.Request(url=loginStatusURL, data=data, method='POST')
+    responseStream = request.urlopen(req)
+    responseText = responseStream.read().decode('utf-8')
+    logger('Response:' + responseText)
+    return responseText
+
+
+def logger(str):
+    print('log >>> ' + str)
