@@ -42,6 +42,9 @@ def main():
 
     # 登录
     # loginResponse = pwLogin()
+    # 补打空cookie
+    cookie = ''
+
     loginResponse = WeiBanAPI.qrLogin()
 
     try:
@@ -71,8 +74,8 @@ def main():
         getProgressResponse = WeiBanAPI.getProgress(loginResponse['data']['preUserProjectId'],
                                                     tenantCode,
                                                     cookie)
-        print('课程总数：' + str(getProgressResponse['data']['courseNum']) + '\n'
-              + '完成课程：' + str(getProgressResponse['data']['courseFinishedNum']) + '\n'
+        print('课程总数：' + str(getProgressResponse['data']['requiredNum']) + '\n'
+              + '完成课程：' + str(getProgressResponse['data']['requiredFinishedNum']) + '\n'
               + '结束时间' + str(getProgressResponse['data']['endTime']) + '\n'
               + '剩余天数' + str(getProgressResponse['data']['lastDays'])
               )
