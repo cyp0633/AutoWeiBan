@@ -47,8 +47,18 @@ def main():
 
     loginResponse = WeiBanAPI.qrLogin()
 
+    ### Gobal
+    userProjectId = ''
+    userId = ''
+    ###
+
     try:
         print('登录成功，userName:' + loginResponse['data']['userName'])
+
+        # 设置全局数据
+        userProjectId = loginResponse['data']['preUserProjectId']
+        userId = loginResponse['data']['userId']
+
         time.sleep(2)
     except BaseException:
         print('登录失败')
@@ -98,14 +108,15 @@ def main():
 
     for i in getListCourseResponse['data']:
         print('\n----章节码：' + i['categoryCode'] + '章节内容：' + i['categoryName'])
-        for j in i['courseList']:
+        courseList = WeiBanAPI.getCourseListByCategoryCode(i['categoryCode'], userProjectId, userId, tenantCode)
+        for j in courseList['data']:
             print('课程内容：' + j['resourceName'] + '\nuserCourseId:' + j['userCourseId'])
 
             if (j['finished'] == 1):
                 print('已完成')
             else:
                 print('发送完成请求')
-                WeiBanAPI.doStudy(loginResponse['data']['preUserProjectId'], j['resourceId'], tenantCode)
+                WeiBanAPI.doStudy(userProjectId, j['resourceId'], tenantCode, userId)
                 WeiBanAPI.finishCourse(j['userCourseId'], tenantCode, cookie)
 
                 delayInt = WeiBanAPI.getRandomTime()

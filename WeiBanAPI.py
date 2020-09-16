@@ -16,7 +16,7 @@ getNameURL = 'https://weiban.mycourse.cn/pharos/my/getInfo.do'  # 请求姓名 U
 
 getProgressURL = 'https://weiban.mycourse.cn/pharos/project/showProgress.do'  # 请求进度 URL
 
-getListCourseURL = 'https://weiban.mycourse.cn/pharos/usercourse/listCourse.do'  # 请求课程列表 URL
+getListCourseURL = 'https://weiban.mycourse.cn/pharos/usercourse/listCategory.do'  # 请求课程列表 URL
 
 finishCourseURL = 'https://weiban.mycourse.cn/pharos/usercourse/finish.do'  # 请求完成课程URL
 
@@ -28,6 +28,7 @@ genQRCodeURL = 'https://weiban.mycourse.cn/pharos/login/genBarCodeImageAndCacheU
 
 loginStatusURL = 'https://weiban.mycourse.cn/pharos/login/barCodeWebAutoLogin.do'  # 用于二维码登录刷新登录状态
 
+listCourseURL = 'https://weiban.mycourse.cn/pharos/usercourse/listCourse.do'  # 新接口 通过目录id获取课程列表
 
 # 获取一个新Cookie
 def getCookie():
@@ -130,11 +131,12 @@ def getRandomTime():
     return baseDelayTime + random.randint(0, randomDelayDeviation)
 
 
-def doStudy(userProjectId, userCourseId, tenantCode):
+def doStudy(userProjectId, userCourseId, tenantCode, userId):
     param = {
         'userProjectId': userProjectId,
         'courseId': userCourseId,
-        'tenantCode': tenantCode
+        'tenantCode': tenantCode,
+        'userId': userId
     }
     data = bytes(parse.urlencode(param), encoding='utf-8')
     req = request.Request(url=doStudyURL, data=data, method='POST')
@@ -167,6 +169,27 @@ def getLoginStatus(qrCodeID):
     responseText = responseStream.read().decode('utf-8')
     logger('Response:' + responseText)
     return responseText
+
+
+# 获取课程列表，新接口
+def getCourseListByCategoryCode(categoryCode, userProjectId, userId, tenantCode):
+    param = {
+        'userProjectId': userProjectId,
+        'chooseType': 3,
+        'categoryCode': categoryCode,
+        'name': '',
+        'userId': userId,
+        'tenantCode': tenantCode,
+        'token': ''
+    }
+    print(param)
+
+    data = bytes(parse.urlencode(param), encoding='utf-8')
+    req = request.Request(url=listCourseURL, data=data, method='POST')
+    responseStream = request.urlopen(req)
+    responseText = responseStream.read().decode('utf-8')
+    responseJSON = json.loads(responseText)
+    return responseJSON
 
 
 def logger(str):
