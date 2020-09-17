@@ -6,7 +6,7 @@ import random
 
 tenantCode = '51900002'  # 吉珠院校ID
 
-
+"""
 # 密码登录，已经失效
 def pwLogin():
     print(
@@ -25,24 +25,25 @@ def pwLogin():
     time.sleep(2)
 
     randomTimeStamp = random.randint(1E8, 1E12)
-    print('验证码,浏览器打开 https://weiban.mycourse.cn/pharos/login/randImage.do?time=' + str(randomTimeStamp))
+    print('验证码,浏览器打开 https://weiban.mycourse.cn/pharos/login/randImage.do?time={}'.format(randomTimeStamp))
 
     verifyCode = input('请输入验证码')
 
     # 登录请求
     loginResponse = WeiBanAPI.login(account, password, tenantCode, randomTimeStamp, verifyCode, cookie)
     return loginResponse
-
+"""
 
 def main():
     # 显示License
-    licenseFile = open('.' + os.sep + 'LICENSE', encoding='utf-8')
-    print(licenseFile.read())
-    licenseFile.close()
-
+    '''
+    with open("./LICENSE", encoding="utf-8") as licenseFile:
+        print(licenseFile.read())
+    '''
     # 登录
     # loginResponse = pwLogin()
     # 补打空cookie
+    print("正在连接网课服务器...\n")
     cookie = ''
 
     loginResponse = WeiBanAPI.qrLogin()
@@ -92,6 +93,8 @@ def main():
         time.sleep(2)
     except BaseException:
         print('解析课程进度失败，将尝试继续运行，请注意运行异常')
+
+    getListCourseResponse = {}
 
     # 请求课程列表
     try:
