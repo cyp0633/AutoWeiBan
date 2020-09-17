@@ -37,7 +37,7 @@ def getCookie():
     opener = request.build_opener(handler)
     return cookie
 
-
+"""
 # 登录请求 已经失效
 def login(keyNumber, password, tenantCode, randomTimeStamp, verifyCode, cookie):
     param = {
@@ -53,20 +53,42 @@ def login(keyNumber, password, tenantCode, randomTimeStamp, verifyCode, cookie):
     responseText = responseStream.read().decode('utf-8')
     responseJSON = json.loads(responseText)
     return responseJSON
-
+"""
 
 def qrLogin():
     qrCodeID = getQRCode()
     print(qrCodeID)
-    while True:
-        responseText = getLoginStatus(qrCodeID)
-        responseJSON = json.loads(responseText)
-        if responseJSON['code'] == '0':
-            return responseJSON
-        else:
-            print('未登录，等待后5s刷新')
-            time.sleep(5)
+    print("完成扫码后输入 y 进行下一步：")
+    
+    _confirm_qr_code()
 
+    response = _get_login_response(qrCodeID)
+    current = time.time()
+    while response['code'] != '0':
+        print('未侦测到登录，请重试！')
+        now = time.time()
+        if _confirm_qr_code() and now - current > 5:
+            response = _get_login_response(qrCodeID)
+            current = now
+        else:
+            print("请不要请求过快！推荐间隔5s")
+            continue
+
+    return response
+
+def _get_login_response(qrCodeID):
+    responseText = getLoginStatus(qrCodeID)
+    responseJSON = json.loads(responseText)
+    return responseJSON
+
+def _confirm_qr_code():
+    print("请输入 y 确认扫码或者输入 Ctrl+c 退出程序")
+    confirm = input()
+    while confirm.lower() != "y":
+        print("请按 y 键确认！！")
+        confirm = input()
+
+    return True
 
 # 获取学生信息
 def getStuInfo(userId, tenantCode, cookie):
