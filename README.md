@@ -1,8 +1,12 @@
 # 辅助麦课安全网课学习
 
+## 下载
+
+[点击进入下载页](https://gitee.com/WeiYuanStudio/AutoWeiBan/releases)
+
 ## 使用方法
 
-Windows平台: 请双击打开 `start.bat` ，根据命令行的提示进行操作即可。
+Windows平台: 将 release 页中下载 `AutoWeiBan.zip`，在本地创建一个文件夹，将压缩包解压到文件夹里，双击打开 `start.bat` ，根据命令行的提示进行操作即可。
 
 全平台: 都可以在安装完Python3环境后，到项目路径下执行`python main.py`运行。
 
