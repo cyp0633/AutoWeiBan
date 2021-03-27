@@ -1,13 +1,16 @@
 # 辅助麦课安全网课学习
 
-**原作者：GitHub WeiYuanStudio。**没有他的程序作为基础，就没有这个版本。
+**原作者：GitHub WeiYuanStudio。** 没有他的程序作为基础，就没有这个版本。
+
 ## 使用方法
 
 在右边的releases - source code(zip)下载安装包。
 
 也可以在本页面点击下载代码按钮，选择下载zip。
 
-在使用前，您需要自行获取学校代码，方法是打开新标签页，按F12打开开发者页面，切换到“Network”栏，按左上角的记录按钮，打开主页，在开发者页面的“name”栏中点击```list.do?timestamp=xxxx```，“表单数据”中的tenantCode即为学校代码。
+在使用前，您需要自行获取学校代码，方法是打开新标签页，按F12打开开发者页面，切换到“Network”栏，按左上角的记录按钮，打开网课主页，在开发者页面的“name”栏中点击```list.do?timestamp=xxxx```，“表单数据”中的tenantCode即为学校代码。
+
+湖南大学的代码为41008202，已经内置在```main.py```内。
 
 您可以使用任何文本编辑器（VSCode、记事本、Notepad++、Vim都可以）打开main.py，修改```tenantCode=xxx```的值为学校代码，然后保存。
 
