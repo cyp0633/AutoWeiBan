@@ -113,7 +113,7 @@ def getProgress(userProjectId, tenantCode, cookie):
         'tenantCode': tenantCode
     }
     data = bytes(parse.urlencode(param), encoding='utf-8')
-    req = request.Request(url=getProgressURL, data=data, method='POST')
+    req = request.Request(url=getProgressURL+"?timestamp="+str(int(time.time())), data=data, method='POST')
     responseStream = request.urlopen(req)
     responseText = responseStream.read().decode('utf-8')
     responseJSON = json.loads(responseText)
