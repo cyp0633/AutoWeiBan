@@ -136,7 +136,6 @@ def main():
         for j in courseList['data']:
             print('课程内容：' + j['resourceName'] +
                   '\nuserCourseId:' + j['userCourseId'])
-
             if (j['finished'] == 1):
                 print('已完成')
             else:

@@ -211,6 +211,9 @@ def getCourseListByCategoryCode(categoryCode, userProjectId, userId, tenantCode,
     responseStream = request.urlopen(req)
     responseText = responseStream.read().decode('utf-8')
     responseJSON = json.loads(responseText)
+    for i in responseJSON['data']:
+        if not('userCourseId' in i): #某些时候不能直接获取courseId，但可以通过图片链接提取
+            i['userCourseId']=i['imageUrl'][-40:-4]
     return responseJSON
 
 
