@@ -58,15 +58,25 @@ def main():
         print('登录成功，userName:' + loginResponse['data']['userName'])
 
         # 设置全局数据
-        userProjectId = loginResponse['data']['preUserProjectId']
         userId = loginResponse['data']['userId']
-
         time.sleep(2)
     except BaseException:
         print('登录失败')
         print(loginResponse)  # TODO: 这里的loginResponse调用没有考虑网络错误等问题
         exit(0)
-
+    i = 0
+    print('请选择课程\n1 - {}\n2 - {}\n3 - {}\n4 - {}'.format(loginResponse['data']['preAlias'], loginResponse['data']
+                                                         ['normalAlias'], loginResponse['data']['specialAlias'], loginResponse['data']['militaryAlias']))
+    print('请按照当前课程选择，否则容易出错！！！')
+    i = int(input())
+    if i == 1:
+        userProjectId = loginResponse['data']['preUserProjectId']
+    elif i == 2:
+        userProjectId = loginResponse['data']['normalUserProjectId']
+    elif i == 3:
+        userProjectId = loginResponse['data']['specialUserProjectId']
+    elif i == 4:
+        userProjectId = loginResponse['data']['militaryUserProjectId']
     # 请求解析并打印用户信息
     try:
         print('请求用户信息')
@@ -83,11 +93,11 @@ def main():
 
     # 请求课程完成进度
     try:
-        getProgressResponse = WeiBanAPI.getProgress(loginResponse['data']['preUserProjectId'],
+        getProgressResponse = WeiBanAPI.getProgress(userProjectId,
                                                     tenantCode,
                                                     cookie)
         print("必修课程总数："+str(getProgressResponse['data']['requiredNum'])+'\n'
-              + "必修完成课程:" +
+              + "必修完成课程：" +
               str(getProgressResponse['data']['requiredFinishedNum'])+'\n'
               + '匹配课程总数：' + str(getProgressResponse['data']['pushNum']) + '\n'
               + '匹配完成课程：' +
@@ -101,13 +111,15 @@ def main():
         time.sleep(2)
     except BaseException:
         print('解析课程进度失败，将尝试继续运行，请注意运行异常')
-
+    chooseType=0;
+    print('请选择课程分类\n1 - 匹配课程\n2 - 自选课程\n3 - 必修课程')
+    chooseType=int(input())
     getListCourseResponse = {}
 
     # 请求课程列表
     try:
-        getListCourseResponse = WeiBanAPI.getListCourse(loginResponse['data']['preUserProjectId'],
-                                                        '3',
+        getListCourseResponse = WeiBanAPI.getListCourse(userProjectId,
+                                                        chooseType,
                                                         tenantCode,
                                                         '',
                                                         cookie)
@@ -120,7 +132,7 @@ def main():
     for i in getListCourseResponse['data']:
         print('\n----章节码：' + i['categoryCode'] + '章节内容：' + i['categoryName'])
         courseList = WeiBanAPI.getCourseListByCategoryCode(
-            i['categoryCode'], userProjectId, userId, tenantCode)
+            i['categoryCode'], userProjectId, userId, tenantCode,chooseType)
         for j in courseList['data']:
             print('课程内容：' + j['resourceName'] +
                   '\nuserCourseId:' + j['userCourseId'])
@@ -137,5 +149,6 @@ def main():
                 print('\n随机延时' + str(delayInt))
                 time.sleep(delayInt)
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     main()

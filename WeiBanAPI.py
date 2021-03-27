@@ -194,10 +194,10 @@ def getLoginStatus(qrCodeID):
 
 
 # 获取课程列表，新接口
-def getCourseListByCategoryCode(categoryCode, userProjectId, userId, tenantCode):
+def getCourseListByCategoryCode(categoryCode, userProjectId, userId, tenantCode,chooseType):
     param = {
         'userProjectId': userProjectId,
-        'chooseType': 3,
+        'chooseType': chooseType,
         'categoryCode': categoryCode,
         'name': '',
         'userId': userId,
